@@ -1,0 +1,41 @@
+﻿services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sale_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sale_order_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Nam01012015
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sale_order_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sale_api
+    restart: unless-stopped
+    ports:
+      - "5163:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=sale_order_db;Username=postgres;Password=Nam01012015"
+      JwtSettings__SecretKey: "8fP2xL9vQ4mN7kR1dT5yH3cJ6uW8sE2aZ0gB4nX7pC9vF1q"
+      JwtSettings__Issuer: "SaleOrderAPI"
+      JwtSettings__Audience: "SaleOrderAPIUsers"
+      JwtSettings__ExpirationDays: "7"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+

@@ -1,0 +1,52 @@
+# .NET Build
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Rider
+.idea/
+*.sml.iml
+
+# Visual Studio
+.VS/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+
+# Test Results
+TestResults/
+*.trx
+*.coverage
+
+# Output
+dist/
+publish/
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+*.swp
+*.swo
+*~
+

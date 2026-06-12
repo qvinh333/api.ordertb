@@ -1,0 +1,202 @@
+@baseUrl = http://localhost:5163
+@token = your-jwt-token-here
+
+### Auth - Create Admin User (run first time to set up)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123",
+  "fullName": "Administrator",
+  "role": "ADMIN"
+}
+
+### Auth - Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Auth - Get Current User
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### Auth - Logout
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{token}}
+
+### Users - Get All Users
+GET {{baseUrl}}/api/users?page=1&pageSize=10
+Authorization: Bearer {{token}}
+
+### Users - Get User by ID
+GET {{baseUrl}}/api/users/1
+Authorization: Bearer {{token}}
+
+### Users - Create Seller User
+POST {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "seller01",
+  "password": "seller123",
+  "fullName": "Nguyen Van A",
+  "role": "SELLER"
+}
+
+### Users - Update User
+PUT {{baseUrl}}/api/users/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Administrator Updated",
+  "isActive": true
+}
+
+### Users - Delete User
+DELETE {{baseUrl}}/api/users/1
+Authorization: Bearer {{token}}
+
+### Orders - Get All Orders
+GET {{baseUrl}}/api/orders?page=1&pageSize=10
+Authorization: Bearer {{token}}
+
+### Orders - Get Order by ID
+GET {{baseUrl}}/api/orders/1
+Authorization: Bearer {{token}}
+
+### Orders - Create Order
+POST {{baseUrl}}/api/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "orderCode": "ORD-001",
+  "orderDate": "2026-06-10",
+  "customerName": "Tran Thi B",
+  "productName": "T-Shirt",
+  "specification": "Size M, Color Black",
+  "quantity": 10,
+  "sellingPrice": 5000000,
+  "status": "NEW",
+  "paymentStatus": "UNPAID",
+  "yuanPrice": 200,
+  "importPrice": 3000000,
+  "supplier": "Alibaba",
+  "warehousePayment": 500000,
+  "shippingWeightFee": 200000
+}
+
+### Orders - Update Order
+PUT {{baseUrl}}/api/orders/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customerName": "Tran Thi B Updated",
+  "paymentStatus": "PARTIAL"
+}
+
+### Orders - Update Order Status
+PATCH {{baseUrl}}/api/orders/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "ORDERED"
+}
+
+### Orders - Delete Order
+DELETE {{baseUrl}}/api/orders/1
+Authorization: Bearer {{token}}
+
+### Dashboard - Order Status Statistics
+GET {{baseUrl}}/api/dashboard/order-status
+Authorization: Bearer {{token}}
+
+### Dashboard - Revenue Report
+GET {{baseUrl}}/api/dashboard/revenue
+Authorization: Bearer {{token}}
+
+### Dashboard - Orders by Date
+GET {{baseUrl}}/api/dashboard/orders-by-date
+Authorization: Bearer {{token}}
+
+### Products - Get All Products
+GET {{baseUrl}}/api/products?page=1&pageSize=10&search=shirt
+Authorization: Bearer {{token}}
+
+### Products - Get Product by ID
+GET {{baseUrl}}/api/products/1
+Authorization: Bearer {{token}}
+
+### Products - Create Product
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productCode": "PRD-001",
+  "name": "T-Shirt",
+  "specification": "Size M",
+  "unit": "pcs",
+  "defaultSellingPrice": 250000,
+  "note": "Basic product"
+}
+
+### Products - Update Product
+PUT {{baseUrl}}/api/products/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "T-Shirt Premium",
+  "defaultSellingPrice": 280000
+}
+
+### Products - Delete Product
+DELETE {{baseUrl}}/api/products/1
+Authorization: Bearer {{token}}
+
+### Customers - Get All Customers
+GET {{baseUrl}}/api/customers?page=1&pageSize=10&search=nguyen
+Authorization: Bearer {{token}}
+
+### Customers - Get Customer by ID
+GET {{baseUrl}}/api/customers/1
+Authorization: Bearer {{token}}
+
+### Customers - Create Customer
+POST {{baseUrl}}/api/customers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customerCode": "CUS-001",
+  "fullName": "Nguyen Van A",
+  "phone": "0900000000",
+  "email": "customer@example.com",
+  "address": "Ha Noi",
+  "note": "VIP"
+}
+
+### Customers - Update Customer
+PUT {{baseUrl}}/api/customers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Nguyen Van A Updated",
+  "phone": "0900000001"
+}
+
+### Customers - Delete Customer
+DELETE {{baseUrl}}/api/customers/1
+Authorization: Bearer {{token}}
+
