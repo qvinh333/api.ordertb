@@ -24,6 +24,7 @@ A comprehensive ASP.NET Core Web API for managing Taobao order sales, including 
   - Search by customer name
   - Search by product name
   - Filter by status
+  - Filter by payment status
   - Filter by date range
   - Sorting by creation date
 
@@ -41,6 +42,16 @@ A comprehensive ASP.NET Core Web API for managing Taobao order sales, including 
 - Order status statistics
 - Revenue reporting with profit calculation
 - Orders by date statistics
+
+### Currency Rate Configuration
+- Configure exchange rate by account
+- Keep change history for every update
+- Get the latest configured rate
+- Data isolation by user account (users cannot see each other's rates)
+
+### Health Check
+- Liveness endpoint for process health
+- Readiness endpoint with database connectivity check
 
 ## Technology Stack
 
@@ -142,6 +153,15 @@ Swagger UI will be available at `https://localhost:5163/`
 - `PUT /api/customers/{id}` - Update customer
 - `DELETE /api/customers/{id}` - Delete customer
 
+### Currency Rate
+- `POST /api/currencyrates` - Configure a new exchange rate (stored as history)
+- `GET /api/currencyrates` - Get configured exchange rate history for current account (newest first)
+- `GET /api/currencyrates/latest` - Get latest configured exchange rate for current account
+
+### Health Check
+- `GET /api/health/live` - Liveness check
+- `GET /api/health/ready` - Readiness check (includes DB connection test)
+
 ## Authentication
 
 ### Getting a Token
@@ -234,6 +254,13 @@ Authorization: Bearer <your_jwt_token>
 - `updated_at` - Last update timestamp
 - `deleted` - Soft delete flag (boolean)
 
+### CurrencyRateHistories Table
+- `id` - Primary key (bigint)
+- `rate` - Exchange rate value (decimal 18,4)
+- `note` - Notes for each rate change (text)
+- `created_by` - Created by user ID (bigint)
+- `created_at` - Creation timestamp
+
 ## Project Structure
 
 ```
@@ -244,12 +271,15 @@ API.Sale/
 │   ├── OrdersController.cs
 │   ├── DashboardController.cs
 │   ├── ProductsController.cs
-│   └── CustomersController.cs
+│   ├── CustomersController.cs
+│   ├── CurrencyRatesController.cs
+│   └── HealthController.cs
 ├── Models/
 │   ├── User.cs
 │   ├── Order.cs
 │   ├── Product.cs
 │   ├── Customer.cs
+│   ├── CurrencyRateHistory.cs
 │   └── Enums/
 │       ├── UserRole.cs
 │       ├── OrderStatus.cs
@@ -262,6 +292,7 @@ API.Sale/
 │   ├── DashboardService.cs
 │   ├── ProductService.cs
 │   ├── CustomerService.cs
+│   ├── CurrencyRateService.cs
 │   └── CurrentUserService.cs
 ├── Data/
 │   └── AppDbContext.cs
@@ -272,6 +303,7 @@ API.Sale/
 │   ├── Order/
 │   ├── Product/
 │   ├── Customer/
+│   ├── CurrencyRate/
 │   └── Dashboard/
 ├── Utilities/
 │   └── PasswordHasher.cs
@@ -340,4 +372,3 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues or questions, please contact the development team.
-

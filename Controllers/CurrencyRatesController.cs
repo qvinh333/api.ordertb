@@ -43,6 +43,20 @@ public class CurrencyRatesController : ControllerBase
         });
     }
 
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<List<CurrencyRateResponse>>>> GetRates()
+    {
+        var userId = _currentUserService.GetUserId();
+        var rates = await _currencyRateService.GetRatesAsync(userId);
+
+        return Ok(new ApiResponse<List<CurrencyRateResponse>>
+        {
+            Success = true,
+            Message = "Success",
+            Data = rates.Select(MapToResponse).ToList()
+        });
+    }
+
     [HttpGet("latest")]
     public async Task<ActionResult<ApiResponse<CurrencyRateResponse>>> GetLatestRate()
     {
@@ -78,4 +92,3 @@ public class CurrencyRatesController : ControllerBase
         };
     }
 }
-

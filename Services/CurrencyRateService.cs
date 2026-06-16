@@ -8,6 +8,7 @@ public interface ICurrencyRateService
 {
     Task<CurrencyRateHistory> CreateRateAsync(CreateCurrencyRateRequest request, long currentUserId);
     Task<CurrencyRateHistory?> GetLatestRateAsync(long currentUserId);
+    Task<List<CurrencyRateHistory>> GetRatesAsync(long currentUserId);
 }
 
 public class CurrencyRateService : ICurrencyRateService
@@ -49,5 +50,16 @@ public class CurrencyRateService : ICurrencyRateService
             .FirstOrDefault();
 
         return Task.FromResult(latestRate);
+    }
+
+    public Task<List<CurrencyRateHistory>> GetRatesAsync(long currentUserId)
+    {
+        var rates = _context.Set<CurrencyRateHistory>()
+            .Where(x => x.CreatedBy == currentUserId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.Id)
+            .ToList();
+
+        return Task.FromResult(rates);
     }
 }
