@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<CurrencyRateHistory> CurrencyRateHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -104,6 +105,17 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => new { e.CreatedBy, e.FullName });
             entity.HasIndex(e => new { e.CreatedBy, e.Phone });
         });
+
+        // Currency rate history configuration
+        modelBuilder.Entity<CurrencyRateHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Rate).IsRequired().HasPrecision(18, 4);
+            entity.Property(e => e.Note).HasColumnType("text");
+            entity.Property(e => e.CreatedBy).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+
+            entity.HasIndex(e => new { e.CreatedBy, e.CreatedAt });
+        });
     }
 }
-

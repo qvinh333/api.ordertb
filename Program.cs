@@ -51,6 +51,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICurrencyRateService, CurrencyRateService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 
