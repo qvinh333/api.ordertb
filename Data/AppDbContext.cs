@@ -46,6 +46,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Specification).HasColumnType("text");
             entity.Property(e => e.Quantity).IsRequired();
             entity.Property(e => e.SellingPrice).IsRequired().HasPrecision(18, 2);
+            entity.Property(e => e.AmountSellingPrice).IsRequired().HasPrecision(18, 2);
             entity.Property(e => e.Status).IsRequired();
             entity.Property(e => e.PaymentStatus).IsRequired();
             entity.Property(e => e.YuanPrice).HasPrecision(18, 2);

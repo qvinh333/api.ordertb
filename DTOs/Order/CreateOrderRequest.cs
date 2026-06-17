@@ -9,6 +9,7 @@ public class CreateOrderRequest
     public string? Specification { get; set; }
     public int Quantity { get; set; }
     public decimal SellingPrice { get; set; }
+    public decimal AmountSellingPrice { get; set; }
     public string Status { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;
     public decimal? YuanPrice { get; set; }

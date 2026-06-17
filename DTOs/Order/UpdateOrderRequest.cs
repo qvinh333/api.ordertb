@@ -9,6 +9,7 @@ public class UpdateOrderRequest
     public string? Specification { get; set; }
     public int? Quantity { get; set; }
     public decimal? SellingPrice { get; set; }
+    public decimal? AmountSellingPrice { get; set; }
     public string? PaymentStatus { get; set; }
     public decimal? YuanPrice { get; set; }
     public decimal? ImportPrice { get; set; }

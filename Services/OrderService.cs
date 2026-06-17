@@ -136,7 +136,7 @@ public class OrderService : IOrderService
 
         var total = query.Count();
         var orders = query
-            .OrderByDescending(o => o.CreatedAt)
+            .OrderByDescending(o => o.OrderDate)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(o => MapToResponse(o))
@@ -167,6 +167,7 @@ public class OrderService : IOrderService
             Specification = request.Specification,
             Quantity = request.Quantity,
             SellingPrice = request.SellingPrice,
+            AmountSellingPrice = request.AmountSellingPrice,
             Status = ParseOrderStatus(request.Status),
             PaymentStatus = ParsePaymentStatus(request.PaymentStatus),
             YuanPrice = request.YuanPrice,
@@ -214,6 +215,7 @@ public class OrderService : IOrderService
         if (request.Specification != null) order.Specification = request.Specification;
         if (request.Quantity.HasValue) order.Quantity = request.Quantity.Value;
         if (request.SellingPrice.HasValue) order.SellingPrice = request.SellingPrice.Value;
+        if (request.AmountSellingPrice.HasValue) order.AmountSellingPrice = request.AmountSellingPrice.Value;
         if (!string.IsNullOrEmpty(request.PaymentStatus))
         {
             order.PaymentStatus = ParsePaymentStatus(request.PaymentStatus);
@@ -285,6 +287,7 @@ public class OrderService : IOrderService
             Specification = order.Specification,
             Quantity = order.Quantity,
             SellingPrice = order.SellingPrice,
+            AmountSellingPrice = order.AmountSellingPrice,
             Status = order.Status.ToString(),
             PaymentStatus = order.PaymentStatus.ToString(),
             YuanPrice = order.YuanPrice,

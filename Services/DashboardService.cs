@@ -53,7 +53,7 @@ public class DashboardService : IDashboardService
         }
 
         var totalOrders = query.Count();
-        var totalSellingPrice = query.Sum(o => o.SellingPrice);
+        var totalSellingPrice = query.Sum(o => o.AmountSellingPrice);
         var totalImportPrice = query.Sum(o => o.ImportPrice ?? 0);
         var totalWarehousePayment = query.Sum(o => o.WarehousePayment ?? 0);
         var totalShippingFee = query.Sum(o => o.ShippingWeightFee ?? 0);

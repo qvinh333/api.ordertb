@@ -12,6 +12,7 @@ public class Order
     public string? Specification { get; set; }
     public int Quantity { get; set; }
     public decimal SellingPrice { get; set; }
+    public decimal AmountSellingPrice { get; set; }
     public OrderStatus Status { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public decimal? YuanPrice { get; set; }
