@@ -112,6 +112,15 @@ Content-Type: application/json
   "status": "ORDERED"
 }
 
+### Orders - Update Payment Status
+PATCH {{baseUrl}}/api/orders/1/payment-status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "paymentStatus": "PAID"
+}
+
 ### Orders - Delete Order
 DELETE {{baseUrl}}/api/orders/1
 Authorization: Bearer {{token}}

@@ -21,6 +21,7 @@ public interface IOrderService
     Task<Order> CreateOrderAsync(CreateOrderRequest request, long userId);
     Task<Order> UpdateOrderAsync(long id, UpdateOrderRequest request, long currentUserId);
     Task<Order> UpdateOrderStatusAsync(long id, string status, long currentUserId);
+    Task<Order> UpdatePaymentStatusAsync(long id, string paymentStatus, long currentUserId);
     Task<bool> DeleteOrderAsync(long id, long currentUserId);
 }
 
@@ -248,6 +249,24 @@ public class OrderService : IOrderService
 
         var newStatus = ParseOrderStatus(status);
         order.Status = newStatus;
+        order.UpdatedAt = DateTime.UtcNow;
+
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
+
+        return order;
+    }
+
+    public async Task<Order> UpdatePaymentStatusAsync(long id, string paymentStatus, long currentUserId)
+    {
+        var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId);
+        var order = query.FirstOrDefault(o => o.Id == id);
+        if (order == null)
+        {
+            throw new InvalidOperationException("Order not found");
+        }
+
+        order.PaymentStatus = ParsePaymentStatus(paymentStatus);
         order.UpdatedAt = DateTime.UtcNow;
 
         _context.Orders.Update(order);

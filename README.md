@@ -132,6 +132,7 @@ Swagger UI will be available at `https://localhost:5163/`
 - `POST /api/orders` - Create new order
 - `PUT /api/orders/{id}` - Update order information
 - `PATCH /api/orders/{id}/status` - Update order status
+- `PATCH /api/orders/{id}/payment-status` - Update payment status
 - `DELETE /api/orders/{id}` - Soft delete order
 
 ### Dashboard & Statistics

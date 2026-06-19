@@ -281,6 +281,67 @@ public class OrdersController : ControllerBase
         }
     }
 
+    [HttpPatch("{id}/payment-status")]
+    public async Task<ActionResult<ApiResponse<OrderResponse>>> UpdatePaymentStatus(long id, [FromBody] UpdatePaymentStatusRequest request)
+    {
+        if (string.IsNullOrEmpty(request.PaymentStatus))
+        {
+            return BadRequest(new ApiResponse<OrderResponse>
+            {
+                Success = false,
+                Message = "PaymentStatus is required"
+            });
+        }
+
+        try
+        {
+            var userId = _currentUserService.GetUserId();
+            var order = await _orderService.UpdatePaymentStatusAsync(id, request.PaymentStatus, userId);
+
+            var response = new OrderResponse
+            {
+                Id = order.Id,
+                OrderCode = order.OrderCode,
+                OrderDate = order.OrderDate,
+                CustomerName = order.CustomerName,
+                ProductName = order.ProductName,
+                Specification = order.Specification,
+                Quantity = order.Quantity,
+                SellingPrice = order.SellingPrice,
+                AmountSellingPrice = order.AmountSellingPrice,
+                Status = order.Status.ToString(),
+                PaymentStatus = order.PaymentStatus.ToString(),
+                YuanPrice = order.YuanPrice,
+                ImportPrice = order.ImportPrice,
+                Supplier = order.Supplier,
+                WarehousePayment = order.WarehousePayment,
+                ShippingWeightFee = order.ShippingWeightFee,
+                ShippingPaymentDate = order.ShippingPaymentDate,
+                RefundAmount = order.RefundAmount,
+                RefundStatus = order.RefundStatus,
+                Note = order.Note,
+                CreatedBy = order.CreatedBy,
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt
+            };
+
+            return Ok(new ApiResponse<OrderResponse>
+            {
+                Success = true,
+                Message = "Payment status updated successfully",
+                Data = response
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new ApiResponse<OrderResponse>
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+    }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeleteOrder(long id)
     {
