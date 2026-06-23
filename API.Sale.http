@@ -67,6 +67,10 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/orders?page=1&pageSize=10
 Authorization: Bearer {{token}}
 
+### Orders - Get Money Summary
+GET {{baseUrl}}/api/orders/money-summary?customerName=Tran&productName=T-Shirt&status=NEW&paymentStatus=UNPAID&fromDate=2026-06-01&toDate=2026-06-30
+Authorization: Bearer {{token}}
+
 ### Orders - Get Order by ID
 GET {{baseUrl}}/api/orders/1
 Authorization: Bearer {{token}}

@@ -128,6 +128,7 @@ Swagger UI will be available at `https://localhost:5163/`
 
 ### Order Management
 - `GET /api/orders` - Get all orders with advanced filtering
+- `GET /api/orders/money-summary` - Get order money summary with the same filters as order list
 - `GET /api/orders/{id}` - Get order details
 - `POST /api/orders` - Create new order
 - `PUT /api/orders/{id}` - Update order information

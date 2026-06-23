@@ -49,6 +49,26 @@ public class OrdersController : ControllerBase
         });
     }
 
+    [HttpGet("money-summary")]
+    public async Task<ActionResult<ApiResponse<OrderMoneySummaryResponse>>> GetMoneySummary(
+        [FromQuery] string? customerName = null,
+        [FromQuery] string? productName = null,
+        [FromQuery] string? status = null,
+        [FromQuery] string? paymentStatus = null,
+        [FromQuery] DateTime? fromDate = null,
+        [FromQuery] DateTime? toDate = null)
+    {
+        var userId = _currentUserService.GetUserId();
+        var result = await _orderService.GetMoneySummaryAsync(userId, customerName, productName, status, paymentStatus, fromDate, toDate);
+
+        return Ok(new ApiResponse<OrderMoneySummaryResponse>
+        {
+            Success = true,
+            Message = "Success",
+            Data = result
+        });
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<ApiResponse<OrderResponse>>> GetOrderById(long id)
     {

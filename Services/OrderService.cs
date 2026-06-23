@@ -17,6 +17,14 @@ public interface IOrderService
         string? paymentStatus = null,
         DateTime? fromDate = null,
         DateTime? toDate = null);
+    Task<OrderMoneySummaryResponse> GetMoneySummaryAsync(
+        long currentUserId,
+        string? customerName = null,
+        string? productName = null,
+        string? status = null,
+        string? paymentStatus = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null);
     Task<Order?> GetOrderByIdAsync(long id, long currentUserId);
     Task<Order> CreateOrderAsync(CreateOrderRequest request, long userId);
     Task<Order> UpdateOrderAsync(long id, UpdateOrderRequest request, long currentUserId);
@@ -84,19 +92,15 @@ public class OrderService : IOrderService
         _context = context;
     }
 
-    public async Task<(List<OrderResponse> orders, int total)> GetOrdersAsync(
-        long currentUserId,
-        int page = 1, 
-        int pageSize = 10, 
-        string? customerName = null, 
+    private static IQueryable<Order> ApplySearchFilters(
+        IQueryable<Order> query,
+        string? customerName = null,
         string? productName = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
         DateTime? toDate = null)
     {
-        var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId).AsQueryable();
-
         if (!string.IsNullOrEmpty(customerName))
         {
             query = query.Where(o => o.CustomerName.Contains(customerName));
@@ -135,6 +139,23 @@ public class OrderService : IOrderService
             query = query.Where(o => o.OrderDate < utcToDateExclusive);
         }
 
+        return query;
+    }
+
+    public async Task<(List<OrderResponse> orders, int total)> GetOrdersAsync(
+        long currentUserId,
+        int page = 1, 
+        int pageSize = 10, 
+        string? customerName = null, 
+        string? productName = null,
+        string? status = null,
+        string? paymentStatus = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null)
+    {
+        var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId).AsQueryable();
+        query = ApplySearchFilters(query, customerName, productName, status, paymentStatus, fromDate, toDate);
+
         var total = query.Count();
         var orders = query
             .OrderByDescending(o => o.OrderDate)
@@ -144,6 +165,43 @@ public class OrderService : IOrderService
             .ToList();
 
         return await Task.FromResult((orders, total));
+    }
+
+    public async Task<OrderMoneySummaryResponse> GetMoneySummaryAsync(
+        long currentUserId,
+        string? customerName = null,
+        string? productName = null,
+        string? status = null,
+        string? paymentStatus = null,
+        DateTime? fromDate = null,
+        DateTime? toDate = null)
+    {
+        var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId).AsQueryable();
+        query = ApplySearchFilters(query, customerName, productName, status, paymentStatus, fromDate, toDate);
+
+        var totalOrders = query.Count();
+        var totalQuantity = query.Sum(o => (int?)o.Quantity) ?? 0;
+        var totalSellingPrice = query.Sum(o => (decimal?)o.SellingPrice) ?? 0;
+        var totalAmountSellingPrice = query.Sum(o => (decimal?)o.AmountSellingPrice) ?? 0;
+        var totalYuanPrice = query.Sum(o => o.YuanPrice) ?? 0;
+        var totalImportPrice = query.Sum(o => o.ImportPrice) ?? 0;
+        var totalWarehousePayment = query.Sum(o => o.WarehousePayment) ?? 0;
+        var totalShippingWeightFee = query.Sum(o => o.ShippingWeightFee) ?? 0;
+        var totalRefundAmount = query.Sum(o => o.RefundAmount) ?? 0;
+
+        return await Task.FromResult(new OrderMoneySummaryResponse
+        {
+            TotalOrders = totalOrders,
+            TotalQuantity = totalQuantity,
+            TotalSellingPrice = totalSellingPrice,
+            TotalAmountSellingPrice = totalAmountSellingPrice,
+            TotalYuanPrice = totalYuanPrice,
+            TotalImportPrice = totalImportPrice,
+            TotalWarehousePayment = totalWarehousePayment,
+            TotalShippingWeightFee = totalShippingWeightFee,
+            TotalRefundAmount = totalRefundAmount,
+            EstimatedProfit = totalAmountSellingPrice - totalImportPrice - totalWarehousePayment - totalShippingWeightFee + totalRefundAmount
+        });
     }
 
     public async Task<Order?> GetOrderByIdAsync(long id, long currentUserId)
