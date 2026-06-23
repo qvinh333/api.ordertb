@@ -1,6 +1,7 @@
 using API.Sale.Data;
 using API.Sale.DTOs.Product;
 using API.Sale.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Sale.Services;
 
@@ -28,7 +29,10 @@ public class ProductService : IProductService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            query = query.Where(p => p.ProductCode.Contains(search) || p.Name.Contains(search));
+            var searchPattern = $"%{search.Trim()}%";
+            query = query.Where(p =>
+                EF.Functions.ILike(AppDbContext.Unaccent(p.ProductCode), AppDbContext.Unaccent(searchPattern)) ||
+                EF.Functions.ILike(AppDbContext.Unaccent(p.Name), AppDbContext.Unaccent(searchPattern)));
         }
 
         var total = query.Count();

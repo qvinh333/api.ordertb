@@ -1,6 +1,7 @@
 using API.Sale.Data;
 using API.Sale.DTOs.Customer;
 using API.Sale.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Sale.Services;
 
@@ -28,7 +29,11 @@ public class CustomerService : ICustomerService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            query = query.Where(c => c.CustomerCode.Contains(search) || c.FullName.Contains(search) || (c.Phone != null && c.Phone.Contains(search)));
+            var searchPattern = $"%{search.Trim()}%";
+            query = query.Where(c =>
+                EF.Functions.ILike(AppDbContext.Unaccent(c.CustomerCode), AppDbContext.Unaccent(searchPattern)) ||
+                EF.Functions.ILike(AppDbContext.Unaccent(c.FullName), AppDbContext.Unaccent(searchPattern)) ||
+                (c.Phone != null && EF.Functions.ILike(AppDbContext.Unaccent(c.Phone), AppDbContext.Unaccent(searchPattern))));
         }
 
         var total = query.Count();

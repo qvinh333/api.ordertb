@@ -10,6 +10,8 @@ public class AppDbContext : DbContext
     {
     }
 
+    public static string Unaccent(string value) => throw new NotSupportedException("This method is for use in LINQ queries only.");
+
     public DbSet<User> Users { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -19,6 +21,11 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.HasPostgresExtension("unaccent");
+        modelBuilder
+            .HasDbFunction(typeof(AppDbContext).GetMethod(nameof(Unaccent), new[] { typeof(string) })!)
+            .HasName("unaccent");
 
         // User configuration
         modelBuilder.Entity<User>(entity =>
