@@ -26,13 +26,14 @@ public class OrdersController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string? customerName = null,
         [FromQuery] string? productName = null,
+        [FromQuery] string? supplier = null,
         [FromQuery] string? status = null,
         [FromQuery] string? paymentStatus = null,
         [FromQuery] DateTime? fromDate = null,
         [FromQuery] DateTime? toDate = null)
     {
         var userId = _currentUserService.GetUserId();
-        var (orders, total) = await _orderService.GetOrdersAsync(userId, page, pageSize, customerName, productName, status, paymentStatus, fromDate, toDate);
+        var (orders, total) = await _orderService.GetOrdersAsync(userId, page, pageSize, customerName, productName, supplier, status, paymentStatus, fromDate, toDate);
 
         return Ok(new ApiResponse<object>
         {
@@ -53,13 +54,14 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<ApiResponse<OrderMoneySummaryResponse>>> GetMoneySummary(
         [FromQuery] string? customerName = null,
         [FromQuery] string? productName = null,
+        [FromQuery] string? supplier = null,
         [FromQuery] string? status = null,
         [FromQuery] string? paymentStatus = null,
         [FromQuery] DateTime? fromDate = null,
         [FromQuery] DateTime? toDate = null)
     {
         var userId = _currentUserService.GetUserId();
-        var result = await _orderService.GetMoneySummaryAsync(userId, customerName, productName, status, paymentStatus, fromDate, toDate);
+        var result = await _orderService.GetMoneySummaryAsync(userId, customerName, productName, supplier, status, paymentStatus, fromDate, toDate);
 
         return Ok(new ApiResponse<OrderMoneySummaryResponse>
         {

@@ -13,6 +13,7 @@ public interface IOrderService
         int pageSize = 10, 
         string? customerName = null, 
         string? productName = null,
+        string? supplier = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
@@ -21,6 +22,7 @@ public interface IOrderService
         long currentUserId,
         string? customerName = null,
         string? productName = null,
+        string? supplier = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
@@ -96,6 +98,7 @@ public class OrderService : IOrderService
         IQueryable<Order> query,
         string? customerName = null,
         string? productName = null,
+        string? supplier = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
@@ -109,6 +112,11 @@ public class OrderService : IOrderService
         if (!string.IsNullOrEmpty(productName))
         {
             query = query.Where(o => o.ProductName.Contains(productName));
+        }
+
+        if (!string.IsNullOrEmpty(supplier))
+        {
+            query = query.Where(o => o.Supplier != null && o.Supplier.Contains(supplier));
         }
 
         if (!string.IsNullOrEmpty(status))
@@ -144,17 +152,18 @@ public class OrderService : IOrderService
 
     public async Task<(List<OrderResponse> orders, int total)> GetOrdersAsync(
         long currentUserId,
-        int page = 1, 
-        int pageSize = 10, 
-        string? customerName = null, 
+        int page = 1,
+        int pageSize = 10,
+        string? customerName = null,
         string? productName = null,
+        string? supplier = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
         DateTime? toDate = null)
     {
         var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId).AsQueryable();
-        query = ApplySearchFilters(query, customerName, productName, status, paymentStatus, fromDate, toDate);
+        query = ApplySearchFilters(query, customerName, productName, supplier, status, paymentStatus, fromDate, toDate);
 
         var total = query.Count();
         var orders = query
@@ -171,13 +180,14 @@ public class OrderService : IOrderService
         long currentUserId,
         string? customerName = null,
         string? productName = null,
+        string? supplier = null,
         string? status = null,
         string? paymentStatus = null,
         DateTime? fromDate = null,
         DateTime? toDate = null)
     {
         var query = ApplyUserScope(_context.Orders.Where(o => !o.Deleted), currentUserId).AsQueryable();
-        query = ApplySearchFilters(query, customerName, productName, status, paymentStatus, fromDate, toDate);
+        query = ApplySearchFilters(query, customerName, productName, supplier, status, paymentStatus, fromDate, toDate);
 
         var totalOrders = query.Count();
         var totalQuantity = query.Sum(o => (int?)o.Quantity) ?? 0;

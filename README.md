@@ -23,6 +23,7 @@ A comprehensive ASP.NET Core Web API for managing Taobao order sales, including 
 - Advanced filtering and search:
   - Search by customer name
   - Search by product name
+  - Filter by supplier
   - Filter by status
   - Filter by payment status
   - Filter by date range

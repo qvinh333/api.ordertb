@@ -64,11 +64,11 @@ DELETE {{baseUrl}}/api/users/1
 Authorization: Bearer {{token}}
 
 ### Orders - Get All Orders
-GET {{baseUrl}}/api/orders?page=1&pageSize=10
+GET {{baseUrl}}/api/orders?page=1&pageSize=10&supplier=Alibaba
 Authorization: Bearer {{token}}
 
 ### Orders - Get Money Summary
-GET {{baseUrl}}/api/orders/money-summary?customerName=Tran&productName=T-Shirt&status=NEW&paymentStatus=UNPAID&fromDate=2026-06-01&toDate=2026-06-30
+GET {{baseUrl}}/api/orders/money-summary?customerName=Tran&productName=T-Shirt&supplier=Alibaba&status=NEW&paymentStatus=UNPAID&fromDate=2026-06-01&toDate=2026-06-30
 Authorization: Bearer {{token}}
 
 ### Orders - Get Order by ID
